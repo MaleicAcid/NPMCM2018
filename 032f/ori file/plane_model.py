@@ -57,11 +57,11 @@ if PROBLEM == '1.1':
         z_num += 1
 if PROBLEM == '2.0' or PROBLEM == '3.0':
 # a_i1_i2_k: transfer from plane i to plane j using cost k 
-    a_num = 0
-    for (i1, i2) in data.const['TransferNumber']: 
-        # NOTE: starts from 0
+    a_num = 0 # ??
+    for (i1, i2) in data.const['TransferNumber']: # 转运的飞机??数量 和 TotalPlane有什么不同
+        # NOTE: 0代表临时停机位路线 starts from 0 
 
-        for k in range(0, data.const['TotalCost'][PROBLEM] + 1): 
+        for k in range(0, data.const['TotalCost'][PROBLEM] + 1): # 总的路线数 0-16
             names.append('a_{}_{}_{}'.format(i1, i2, k))
             a_num += 1
     # y_i1_i2: whether successfully transfer from plane i to plane j
@@ -69,7 +69,8 @@ if PROBLEM == '2.0' or PROBLEM == '3.0':
     for (i1, i2) in data.const['TransferNumber']: 
         names.append('y_{}_{}'.format(i1, i2)) 
         y_num += 1
-    # cost_i1_i2: cost to transfer from plane i to plane j cost_num = 0
+    # cost_i1_i2: cost to transfer from plane i to plane j 
+    cost_num = 0
     for (i1, i2) in data.const['TransferNumber']: 
         names.append('cost_{}_{}'.format(i1, i2)) 
         cost_num += 1
@@ -94,8 +95,8 @@ elif PROBLEM == '1.1':
 elif PROBLEM == '2.0' or PROBLEM == '3.0':
     if PROBLEM == '2.0':
         objective = [0] * (x_num + xt_num + a_num + y_num) 
-    for (i1, i2) in data.const['TransferNumber']:
-        objective.append(data.const['TransferNumber'][(i1, i2)])
+        for (i1, i2) in data.const['TransferNumber']:
+            objective.append(data.const['TransferNumber'][(i1, i2)])
     else:
         objective = [0] * (x_num + xt_num + a_num + y_num) 
         for (i1, i2) in data.const['TransferNumber']:
