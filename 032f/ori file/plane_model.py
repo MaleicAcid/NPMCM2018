@@ -58,7 +58,13 @@ if PROBLEM == '1.1':
 if PROBLEM == '2.0' or PROBLEM == '3.0':
 # a_i1_i2_k: transfer from plane i to plane j using cost k 
     a_num = 0 # ??
-    for (i1, i2) in data.const['TransferNumber']: # 转运的飞机??数量 和 TotalPlane有什么不同
+    for (i1, i2) in data.const['TransferNumber']: # 转运的飞机??303?? 和 TotalPlane有什么不同 又或是指旅客
+        '''
+        到底是pucks 654行 还是 587行
+        猜测类似于
+        for (i, j) in [(1, 2), (3, 4), (5, 6)]:
+            print(i, j) 输出 (1,2)
+        '''
         # NOTE: 0代表临时停机位路线 starts from 0 
 
         for k in range(0, data.const['TotalCost'][PROBLEM] + 1): # 总的路线数 0-16
@@ -93,7 +99,7 @@ elif PROBLEM == '1.1':
     # binary variables
     types = ['B'] * (x_num + xt_num + z_num)
 elif PROBLEM == '2.0' or PROBLEM == '3.0':
-    if PROBLEM == '2.0':
+    if PROBLEM == '2.0': #min{旅客数*每人用的时间}
         objective = [0] * (x_num + xt_num + a_num + y_num) 
         for (i1, i2) in data.const['TransferNumber']:
             objective.append(data.const['TransferNumber'][(i1, i2)])
@@ -217,7 +223,7 @@ rhs.append(ANS['1.0'])
 constraint_senses.append('E') # =47 ??
 
 if PROBLEM == '2.0' or PROBLEM == '3.0':
-    # gate number constraint
+    # gate number constraint 临时停机位=47
     c = [[], []]
     for i in range(1, data.const['TotalPlane'] + 1): 
         c[0].append('x_{}_0'.format(i)) 
@@ -231,7 +237,7 @@ if PROBLEM == '2.0' or PROBLEM == '3.0':
     for (i1, i2) in data.const['TransferNumber']: 
         p1 = data.filtered_plane_dict[i1]
         p2 = data.filtered_plane_dict[i2] 
-        if i1 == i2:
+        if i1 == i2: # 如果
             for j in range(1, data.const['TotalGate'] + 1): 
                 g = data.filtered_gate_dict[j]
                 if PROBLEM == '2.0':
@@ -243,7 +249,7 @@ if PROBLEM == '2.0' or PROBLEM == '3.0':
                 constraint_names.append('c_{}'.format(len(constraints))) 
                 constraints.append(c)
                 rhs.append(1) 
-                constraint_senses.append('L')
+                constraint_senses.append('L') # <=1
             c = [['x_{}_0'.format(i1), 'a_{}_{}_0'.format(i1, i2)], [1, -1]] 
             constraint_names.append('c_{}'.format(len(constraints))) 
             constraints.append(c)
@@ -292,7 +298,7 @@ if PROBLEM == '2.0' or PROBLEM == '3.0':
         constraint_senses.append('E')
 
     # constraint between y_i1_i2 and a_i1_i2_k 
-    M = 10 * 24 * 60
+    M = 10 * 24 * 60 # 10天的分钟数??
     for (i1, i2) in data.const['TransferNumber']: 
         p1 = data.filtered_plane_dict[i1]
         p2 = data.filtered_plane_dict[i2] 
